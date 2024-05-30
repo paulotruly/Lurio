@@ -22,7 +22,7 @@ export default class SpriteSheet {
                 0,
                 width,
                 height);
-        this.tiles.set(name, buffer);
+        this.tiles.set(name, buffer)
     }
 
     defineTile(name, x, y) {
@@ -37,6 +37,4 @@ export default class SpriteSheet {
     drawTile(name, context, x, y) {
         this.draw(name, context, x * this.width, y * this.height);
     }
-
 }
-

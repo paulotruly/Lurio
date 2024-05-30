@@ -24,5 +24,4 @@ export default class Timer {
     start() {
         this.enqueue();
     }
-
 }
