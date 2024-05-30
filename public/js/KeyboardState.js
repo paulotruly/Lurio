@@ -3,10 +3,8 @@ const RELEASED = 0;
 
 export default class KeyboardState {
     constructor() {
-        // Holds the current state of a given key
         this.keyStates = new Map();
 
-        // Holds the callback functions for a key code
         this.keyMap = new Map();
     }
 
@@ -18,7 +16,6 @@ export default class KeyboardState {
         const {code} = event;
 
         if (!this.keyMap.has(code)) {
-            // Did not have key mapped.
             return;
         }
 
