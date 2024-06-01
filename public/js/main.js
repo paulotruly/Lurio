@@ -1,55 +1,53 @@
-import Compositor from './Compositor.js';
+import Camera from './Camera.js';
+import Entity from './Entity.js';
+import PlayerController from './traits/PlayerController.js';
 import Timer from './Timer.js';
-import {loadLevel} from './loaders.js';
-import {createMario} from './entities.js';
-import {loadBackgroundSprites} from './sprites.js';
-import {createBackgroundLayer, createSpriteLayer} from './layers.js';
+import {createLevelLoader} from './loaders/level.js';
+import {loadEntities} from './entities.js';
+import {setupKeyboard} from './input.js';
+import {createCollisionLayer} from './layers.js';
 
-import Keyboard from './KeyboardStates.js';
+function createPlayerEnv(playerEntity) {
+    const playerEnv = new Entity();
+    const playerControl = new PlayerController();
+    playerControl.checkpoint.set(64, 64);
+    playerControl.setPlayer(playerEntity);
+    playerEnv.addTrait(playerControl);
+    return playerEnv;
+}
 
-const canvas = document.getElementById('screen');
-const context = canvas.getContext('2d');
+async function main(canvas) {
+    const context = canvas.getContext('2d');
 
-Promise.all([
-    createMario(),
-    loadBackgroundSprites(),
-    loadLevel('1-1'),
-])
+    const entityFactory = await loadEntities();
+    const loadLevel = await createLevelLoader(entityFactory);
 
-.then(([mario, backgroundSprites, level]) => {
-    const comp = new Compositor();
+    const level = await loadLevel('1-1');
 
-    const backgroundLayer = createBackgroundLayer(level.backgrounds, backgroundSprites);
-    comp.layers.push(backgroundLayer);
+    const camera = new Camera();
 
-    const gravity = 2000;
-    mario.pos.set(64, 180);
+    const mario = entityFactory.mario();
 
-    const SPACE = 32;
-    const input = new Keyboard();
-    input.addMapping(32, keyState => {
-        if (keyState) { 
-            mario.jump.start();
-        } else {
-            mario.jump.cancel();
-        }
-        console.log(keyState);
-    });
+    const playerEnv = createPlayerEnv(mario);
+    level.entities.add(playerEnv);
+
+
+    level.comp.layers.push(createCollisionLayer(level));
+
+    const input = setupKeyboard(mario);
     input.listenTo(window);
 
-    const spriteLayer = createSpriteLayer(mario);
-    comp.layers.push(spriteLayer);
-
     const timer = new Timer(1/60);
-
     timer.update = function update(deltaTime) {
-        mario.update(deltaTime);
+        level.update(deltaTime);
 
-        comp.draw(context);
+        camera.pos.x = Math.max(0, mario.pos.x - 100);
 
-        mario.vel.y += gravity * deltaTime;
-        }
+        level.comp.draw(context, camera);
+    }
 
     timer.start();
-});
+}
 
+const canvas = document.getElementById('screen');
+main(canvas);
