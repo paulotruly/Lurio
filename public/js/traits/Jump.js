@@ -52,5 +52,3 @@ export default class Jump extends Trait {
         this.ready--;
     }
 }
-
-// linha nova

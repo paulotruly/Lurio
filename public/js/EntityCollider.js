@@ -10,6 +10,7 @@ export default class EntityCollider {
             }
 
             if (subject.bounds.overlaps(candidate.bounds)) {
+                debugger;
                 subject.collides(candidate);
                 candidate.collides(subject);
             }
