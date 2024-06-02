@@ -56,7 +56,7 @@ function createGoombaFactory(sprite) {
         goomba.addTrait(new Solid());
         goomba.addTrait(new PendulumMove());
         goomba.addTrait(new Behavior());
-        goomba.addTrait(new Killable()); 
+        goomba.addTrait(new Killable());
 
         goomba.draw = drawGoomba;
 

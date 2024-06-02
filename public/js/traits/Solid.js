@@ -1,11 +1,9 @@
 import {Sides, Trait} from '../Entity.js';
-import EntityCollider from '../EntityCollider.js';
 
 export default class Solid extends Trait {
     constructor() {
         super('solid');
         this.obstructs = true;
-
     }
 
     obstruct(entity, side, match) {

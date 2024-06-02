@@ -1,8 +1,8 @@
 import Entity, {Sides, Trait} from '../Entity.js';
 import Killable from '../traits/Killable.js';
 import PendulumMove from '../traits/PendulumMove.js';
-import Physics from '../traits/Physics.js'
-import Solid from '../traits/Solid.js'
+import Physics from '../traits/Physics.js';
+import Solid from '../traits/Solid.js';
 import {loadSpriteSheet} from '../loaders.js';
 
 export function loadKoopa() {
@@ -48,7 +48,7 @@ class Behavior extends Trait {
             this.panic(us, them);
         } else if (this.state === STATE_PANIC) {
             const travelDir = Math.sign(us.vel.x);
-            const impactDir = Math.sign(us.pos.x - them.pos.x); 
+            const impactDir = Math.sign(us.pos.x - them.pos.x);
             if (travelDir !== 0 && travelDir !== impactDir) {
                 them.killable.kill();
             }

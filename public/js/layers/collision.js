@@ -1,5 +1,5 @@
 function createEntityLayer(entities) {
-   return function drawBoundingBox(context, camera) {
+    return function drawBoundingBox(context, camera) {
         context.strokeStyle = 'red';
         entities.forEach(entity => {
             context.beginPath();
@@ -10,7 +10,7 @@ function createEntityLayer(entities) {
                 entity.size.y);
             context.stroke();
         });
-    }
+    };
 }
 
 function createTileCandidateLayer(tileCollider) {
@@ -41,7 +41,7 @@ function createTileCandidateLayer(tileCollider) {
 }
 
 export function createCollisionLayer(level) {
-    
+
     const drawTileCandidates = createTileCandidateLayer(level.tileCollider);
     const drawBoundingBoxes = createEntityLayer(level.entities);
 
