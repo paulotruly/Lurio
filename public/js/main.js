@@ -9,6 +9,8 @@ import {setupKeyboard} from './input.js';
 import {createCollisionLayer} from './layers/collision.js';
 import {createDashboardLayer} from './layers/dashboard.js';
 
+teste = new teste;
+
 function createPlayerEnv(playerEntity) {
     const playerEnv = new Entity();
     const playerControl = new PlayerController();
