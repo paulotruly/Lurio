@@ -17,8 +17,8 @@ export default class Emitter extends Trait {
     update(entity, {deltaTime}, level) {
         this.coolDown -= deltaTime;
         if (this.coolDown <= 0) {
-            this.emit(entity, level); // Corrigido aqui
+            this.emit(entity, level);
             this.coolDown = this.interval;
         }
-    }    
+    }
 }

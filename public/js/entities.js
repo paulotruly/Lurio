@@ -11,7 +11,6 @@ export function loadEntities(audioContext) {
         return factory => entityFactories[name] = factory;
     }
 
-
     return Promise.all([
         loadMario(audioContext).then(addAs('mario')),
         loadGoomba(audioContext).then(addAs('goomba')),
@@ -19,7 +18,6 @@ export function loadEntities(audioContext) {
         loadBullet(audioContext).then(addAs('bullet')),
         loadCannon(audioContext, entityFactories).then(addAs('cannon')),
 
-        
     ])
     .then(() => entityFactories);
 }

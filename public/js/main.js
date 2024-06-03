@@ -8,6 +8,7 @@ import {setupKeyboard} from './input.js';
 import {createCollisionLayer} from './layers/collision.js';
 import {createDashboardLayer} from './layers/dashboard.js';
 
+
 async function main(canvas) {
     const context = canvas.getContext('2d');
     const audioContext = new AudioContext();
@@ -25,7 +26,6 @@ async function main(canvas) {
     const camera = new Camera();
 
     const mario = createPlayer(entityFactory.mario());
-    console.log(mario);
 
     const playerEnv = createPlayerEnv(mario);
     level.entities.add(playerEnv);
@@ -39,6 +39,7 @@ async function main(canvas) {
 
     const gameContext = {
         audioContext,
+        entityFactory,
         deltaTime: null,
     };
 
@@ -59,7 +60,7 @@ const canvas = document.getElementById('screen');
 
 const start = () => {
     window.removeEventListener('click', start);
-    main(canvas); 
+    main(canvas);
 };
 
 window.addEventListener('click', start);

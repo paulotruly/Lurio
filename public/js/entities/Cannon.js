@@ -1,12 +1,12 @@
 import Entity from '../Entity.js';
 import Emitter from '../traits/Emitter.js';
-import { findPlayers } from '../player.js';
+import {findPlayers} from '../player.js';
 import {loadAudioBoard} from '../loaders/audio.js';
 
 const HOLD_FIRE_THRESHOLD = 30;
 
 export function loadCannon(audioContext, entityFactories) {
-    return loadAudioBoard('cannon', audioContext) 
+    return loadAudioBoard('cannon', audioContext)
     .then(audio => {
         return createCannonFactory(audio, entityFactories);
     });
@@ -14,18 +14,20 @@ export function loadCannon(audioContext, entityFactories) {
 
 function createCannonFactory(audio, entityFactories) {
 
-    function emitBullet(cannon, level) {    
+
+    function emitBullet(cannon, level) {
         let dir = 1;
         for (const player of findPlayers(level)) {
             if (player.pos.x > cannon.pos.x - HOLD_FIRE_THRESHOLD
-                && player.pos.x < cannon.pos.x + HOLD_FIRE_THRESHOLD) {
-                    return;
-                }
+            && player.pos.x < cannon.pos.x + HOLD_FIRE_THRESHOLD) {
+                return;
+            }
 
-                if (player.pos.x > cannon.pos.x) {
-                    dir = -1;
-                }
+            if (player.pos.x < cannon.pos.x) {
+                dir = -1;
+            }
         }
+
         const bullet = entityFactories.bullet();
 
         bullet.pos.copy(cannon.pos);
@@ -40,7 +42,7 @@ function createCannonFactory(audio, entityFactories) {
         cannon.audio = audio;
 
         const emitter = new Emitter();
-        emitter.interval = 0.2;
+        emitter.interval = 4;
         emitter.emitters.push(emitBullet);
         cannon.addTrait(emitter);
         return cannon;

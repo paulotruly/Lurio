@@ -15,7 +15,7 @@ export default class Stomper extends Trait {
         if (!them.killable || them.killable.dead) {
             return;
         }
-        
+
         if (us.vel.y > them.vel.y) {
             this.queue(() => this.bounce(us, them));
             us.sounds.add('stomp');

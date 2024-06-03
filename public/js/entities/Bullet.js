@@ -1,8 +1,8 @@
 import Entity, {Sides, Trait} from '../Entity.js';
 import Killable from '../traits/Killable.js';
+import Gravity from '../traits/Gravity.js';
 import Velocity from '../traits/Velocity.js';
 import {loadSpriteSheet} from '../loaders.js';
-import Gravity from '../traits/Gravity.js';
 
 export function loadBullet() {
     return loadSpriteSheet('bullet')
@@ -20,12 +20,12 @@ class Behavior extends Trait {
         if (us.killable.dead) {
             return;
         }
-        
+
         console.log('Collision in Bullet', them.vel.y);
         if (them.stomper) {
             if (them.vel.y > us.vel.y) {
                 us.killable.kill();
-                us.vel.set(100, 200);
+                us.vel.set(100, -200);
             } else {
                 them.killable.kill();
             }
@@ -47,7 +47,7 @@ function createBulletFactory(sprite) {
 
     return function createBullet() {
         const bullet = new Entity();
-        bullet.size.set(16, 16);
+        bullet.size.set(16, 14);
 
         bullet.addTrait(new Velocity());
         bullet.addTrait(new Behavior());

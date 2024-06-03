@@ -6,6 +6,4 @@ export default class Player extends Trait {
         this.lives = 3;
         this.score = 0;
     }
-
-    
 }
