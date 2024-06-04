@@ -1,6 +1,7 @@
 import {Matrix} from '../math.js';
 import Entity from '../Entity.js';
 import LevelTimer from '../traits/LevelTimer.js';
+import Trigger from '../traits/Trigger.js';
 import Level from '../Level.js';
 import {createSpriteLayer} from '../layers/sprites.js';
 import {createBackgroundLayer} from '../layers/background.js';
@@ -12,6 +13,10 @@ function createTimer() {
     const timer = new Entity();
     timer.addTrait(new LevelTimer());
     return timer;
+}
+
+function loadPattern(name) {
+    return loadJSON(`/sprites/patterns/${name}.json`);
 }
 
 function setupBehavior(level) {
@@ -26,9 +31,9 @@ function setupBehavior(level) {
     });
 }
 
-function setupBackgrounds(levelSpec, level, backgroundSprites) {
+function setupBackgrounds(levelSpec, level, backgroundSprites, patterns) {
     levelSpec.layers.forEach(layer => {
-        const grid = createGrid(layer.tiles, levelSpec.patterns);
+        const grid = createGrid(layer.tiles, patterns);
         const backgroundLayer = createBackgroundLayer(level, grid, backgroundSprites);
         level.comp.layers.push(backgroundLayer);
         level.tileCollider.addGrid(grid);
@@ -47,6 +52,26 @@ function setupEntities(levelSpec, level, entityFactory) {
     level.comp.layers.push(spriteLayer);
 }
 
+function setupTriggers(levelSpec, level) {
+    if (!levelSpec.triggers) {
+        return;
+    }
+
+    for (const triggerSpec of levelSpec.triggers) {
+        const trigger = new Trigger();
+
+        trigger.conditions.push((entity, touches, gc, level) => {
+            level.events.emit(Level.EVENT_TRIGGER, triggerSpec, entity, touches);
+        });
+
+        const entity = new Entity();
+        entity.addTrait(trigger);
+        /**entity.size.set(64, 64); (cria um quadrado vermelhor para simbolizar o trigger)**/ 
+        entity.pos.set(triggerSpec.pos[0], triggerSpec.pos[1]);
+        level.entities.add(entity);
+    }
+}
+
 export function createLevelLoader(entityFactory) {
     return function loadLevel(name) {
         return loadJSON(`/levels/${name}.json`)
@@ -54,13 +79,16 @@ export function createLevelLoader(entityFactory) {
             levelSpec,
             loadSpriteSheet(levelSpec.spriteSheet),
             loadMusicSheet(levelSpec.musicSheet),
+            loadPattern(levelSpec.patternSheet),
         ]))
-        .then(([levelSpec, backgroundSprites, musicPlayer]) => {
+        .then(([levelSpec, backgroundSprites, musicPlayer, patterns]) => {
             const level = new Level();
+            level.name = name;
             level.music.setPlayer(musicPlayer);
 
-            setupBackgrounds(levelSpec, level, backgroundSprites);
+            setupBackgrounds(levelSpec, level, backgroundSprites, patterns);
             setupEntities(levelSpec, level, entityFactory);
+            setupTriggers(levelSpec, level);
             setupBehavior(level);
 
             return level;
